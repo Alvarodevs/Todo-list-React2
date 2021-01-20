@@ -2,14 +2,12 @@ import React, { useState, useEffect } from "react";
 import Form from "react-bootstrap/Form";
 import "../../styles/todocontainer.scss";
 import "bootstrap";
-import PropTypes from "prop-types";
 
 export let ToDoContainer = () => {
 	//UseState de tareas y el cambio de tareas
 	let [task, setTask] = useState("");
 	//UseState del array de tareas que necesitamos para visualizar y contar.
 	let [arrayTasks, setArrayTasks] = useState([]);
-
 	//FETCH --> GET --> Get devuelve a (data) los datos que descarga de API con este usuario y los manda a setArrayTasks
 	// setArrayTasks actualiza (useState) el array de tareas.
 	useEffect(function() {
@@ -18,32 +16,36 @@ export let ToDoContainer = () => {
 			.then(data => {
 				setArrayTasks(data);
 			})
-			.catch(err => console.log("Request Failed", err)); // Catch errors
+			.catch(err => console.log("Request Failed", err)); // Catch errors //aquí también podria venir la generación de la lista.
 	}, []);
-
-	//Funcion creacion de array con "task", e Input a "blank".
+	console.log(arrayTasks);
+	//Funcion creacion de array con "task"
 	const handleKeyPress = event => {
 		event.preventDefault();
-		var taskElement = { label: task, done: false };
-		setArrayTasks([taskElement, ...arrayTasks]);
-		modifyList([taskElement, ...arrayTasks]);
+		arrayTasks = arrayTasks.concat({ label: task, done: false });
+		setArrayTasks(arrayTasks);
+		modifyList(arrayTasks);
 		setTask("");
 	};
 	var resultArray = [];
-	//ELIMINACION DE ELEMENTOS
+	//elimina un elemento concreto
 	const removeElement = index => {
 		resultArray = arrayTasks;
-		resultArray.splice(index, 1);
-		setArrayTasks([...resultArray]);
-		modifyList([...resultArray]);
+		if (resultArray.length > 0) {
+			resultArray.splice(index, 1);
+			setArrayTasks([...resultArray]);
+			modifyList([...resultArray]);
+		}
+		if (resultArray.length === 0) {
+			resultArray.splice(index, 1);
+			deleteList();
+		}
 	};
-
 	//Elimina todos los elementos visibles
 	const removeAllElements = index => {
 		setArrayTasks([]);
-		modifyList([]);
+		deleteList([]);
 	};
-
 	//map para recorrer el array
 	const listOfTasks = arrayTasks.map((element, index) => {
 		return (
@@ -57,55 +59,65 @@ export let ToDoContainer = () => {
 			</li>
 		);
 	});
-
-	//DELETE para toda la lista & POST posterior para creacion
-	// const deleteMethod = () => {
-	// 	//console.log(value, "Hello!!");
-	// 	fetch("https://assets.breatheco.de/apis/fake/todos/user/agarzon", {
-	// 		method: "DELETE"
-	// 	})
-	// 		.then(response => response.json())
-	// 		.then(data => console.log(data)) // Manipulate the data retrieved back, if we want to do something with it
-	// 		.catch(err => console.log(err)); // Do something with the error
-	// };
-
-	//POST
-	const createNewPost = () => {
-		//console.log(value, "Hello!!");
-		fetch("https://assets.breatheco.de/apis/fake/todos/user/agarzon", {
-			method: "POST",
-			body: JSON.stringify(),
-			headers: { "Content-type": "application/json" }
-		})
-			.then(response => response.json())
-			.then(data => console.log(data)) // Manipulate the data retrieved back, if we want to do something with it
-			.catch(err => console.log(err)); // Do something with the error
-	};
-
-	const modifyList = e => {
-		//console.log(element, "Hello!!");
+	//API añadir lista.
+	const modifyList = () => {
 		fetch("https://assets.breatheco.de/apis/fake/todos/user/agarzon", {
 			method: "PUT",
-			body: JSON.stringify(e),
+			body: JSON.stringify(arrayTasks),
 			headers: { "Content-type": "application/json" }
 		})
 			.then(response => response.json()) // convert to json
-			.then(() => {
-				if (arrayTasks.length > 0) {
-					fetch(
-						"https://assets.breatheco.de/apis/fake/todos/user/agarzon",
-						{
-							method: "DELETE"
-						}
-					)
-						.then(response => response.json())
-						.catch(err => console.log(err)); // Do something with the error
-				}
+			.then(data => {
+				console.log(data);
 			})
 			.catch(err => {
 				console.log("Request Failed", err);
 			}); // Catch errors
 	};
+	//API eliminar lista.
+	const deleteList = () => {
+		fetch("https://assets.breatheco.de/apis/fake/todos/user/agarzon", {
+			method: "DELETE",
+			body: JSON.stringify([""]),
+			headers: { "Content-type": "application/json" }
+		})
+			.then(response => response.json()) // convert to json
+			.then(data => {
+				//dentro del elemento que se devuelve generamos fetch:post
+				fetch(
+					"https://assets.breatheco.de/apis/fake/todos/user/agarzon",
+					{
+						method: "POST",
+						body: JSON.stringify([""]),
+						headers: { "Content-type": "application/json" }
+						// convert to json
+					}
+				)
+					.then(response => response.json())
+					.then(data =>
+						fetch(
+							"https://assets.breatheco.de/apis/fake/todos/user/agarzon"
+						)
+							.then(response => response.json())
+							.then(data => {
+								setArrayTasks(data);
+							})
+							.catch(err => console.log("Request Failed", err))
+					)
+
+					.catch(err => {
+						console.log("Request Failed", err);
+					});
+			})
+			.catch(err => {
+				console.log("Request Failed", err);
+			}); // Catch errors
+	};
+
+	//formulario
+	//incluye un onChange
+	//Genera la lista de tareas que viene dada del map de arrayTasks
+	//Cuenta el length del array
 
 	return (
 		<div className="form-container">
