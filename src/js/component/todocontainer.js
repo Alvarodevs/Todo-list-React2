@@ -58,62 +58,54 @@ export let ToDoContainer = () => {
 		);
 	});
 
-	const modifyList = () => {
-		console.log(arrayTasks, "Hello!!");
+	//DELETE para toda la lista & POST posterior para creacion
+	// const deleteMethod = () => {
+	// 	//console.log(value, "Hello!!");
+	// 	fetch("https://assets.breatheco.de/apis/fake/todos/user/agarzon", {
+	// 		method: "DELETE"
+	// 	})
+	// 		.then(response => response.json())
+	// 		.then(data => console.log(data)) // Manipulate the data retrieved back, if we want to do something with it
+	// 		.catch(err => console.log(err)); // Do something with the error
+	// };
+
+	//POST
+	const createNewPost = () => {
+		//console.log(value, "Hello!!");
+		fetch("https://assets.breatheco.de/apis/fake/todos/user/agarzon", {
+			method: "POST",
+			body: JSON.stringify(),
+			headers: { "Content-type": "application/json" }
+		})
+			.then(response => response.json())
+			.then(data => console.log(data)) // Manipulate the data retrieved back, if we want to do something with it
+			.catch(err => console.log(err)); // Do something with the error
+	};
+
+	const modifyList = e => {
+		//console.log(element, "Hello!!");
 		fetch("https://assets.breatheco.de/apis/fake/todos/user/agarzon", {
 			method: "PUT",
-			body: JSON.stringify(arrayTasks),
+			body: JSON.stringify(e),
 			headers: { "Content-type": "application/json" }
 		})
 			.then(response => response.json()) // convert to json
-			.then(data => {
-				console.log(data);
+			.then(() => {
+				if (arrayTasks.length > 0) {
+					fetch(
+						"https://assets.breatheco.de/apis/fake/todos/user/agarzon",
+						{
+							method: "DELETE"
+						}
+					)
+						.then(response => response.json())
+						.catch(err => console.log(err)); // Do something with the error
+				}
 			})
 			.catch(err => {
 				console.log("Request Failed", err);
 			}); // Catch errors
 	};
-
-	// // useEffect(
-	// 	function modifyList() {
-	// 		if (task != "") {
-	// 			//Si el input de tarea no viene vacío
-	// 			fetch(
-	// 				"https://assets.breatheco.de/apis/fake/todos/user/agarzon",
-	// 				{
-	// 					method: "PUT",
-	// 					body: JSON.stringify(arrayTasks),
-	// 					headers: { "Content-type": "application/json" }
-	// 				}
-	// 			)
-	// 				.then(response => response.json()) // convert to json
-	// 				.then(data => {
-	// 					console.log(data);
-	// 				})
-	// 				.then(allRemove => {
-	// 					removeAllElements(); //Envío de la eliminación de todos los archivos a la API???
-	// 				})
-	// 				.then(singleTaskremove => {
-	// 					removeElement(); //Envío de la eliminación de una unica tarea a la API???
-	// 				}) //Hay que hacer llegar cualquier eliminacion a la API, ¿se incluyen ambas funciones en el PUT?
-	// 				.catch(err => {
-	// 					console.log("Request Failed", err);
-	// 				}); // Catch errors
-	// 		}
-	// 		modifyList();
-	// 	},
-	// 	[arrayTasks]
-
-	// 	//No muestra los elementos nuevos, aunque si genera el div porque se muestra la cruz.
-	// 	//ALVARO: con setArrayTasks, mismo efecto, se incluye en div, pero sin el texto.
-	// 	//Si mandas task (que seria el input ) entra en loop
-	// // );
-
-	//formulario
-	//incluye un onChange
-	//Genera la lista de tareas que viene dada del map de arrayTasks
-	//Cuenta el length del array
-	//!!!!!!-------------PENDIENTE: Añadir el condicional al segundo icondelete para que no aparezca si el length no es mayor a 0-------------!!!!!!
 
 	return (
 		<div className="form-container">
