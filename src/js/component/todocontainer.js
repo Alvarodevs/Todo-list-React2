@@ -12,11 +12,11 @@ export let ToDoContainer = () => {
 	// setArrayTasks actualiza (useState) el array de tareas.
 	useEffect(function() {
 		fetch("https://assets.breatheco.de/apis/fake/todos/user/agarzon")
-			.then(response => response.json()) // convert to json
+			.then(response => response.json())
 			.then(data => {
 				setArrayTasks(data);
 			})
-			.catch(err => console.log("Request Failed", err)); // Catch errors //aquí también podria venir la generación de la lista.
+			.catch(err => console.log("Request Failed", err));//aquí también podria venir la generación de la lista.
 	}, []);
 	console.log(arrayTasks);
 	//Funcion creacion de array con "task"
@@ -66,13 +66,13 @@ export let ToDoContainer = () => {
 			body: JSON.stringify(arrayTasks),
 			headers: { "Content-type": "application/json" }
 		})
-			.then(response => response.json()) // convert to json
+			.then(response => response.json())
 			.then(data => {
 				console.log(data);
 			})
 			.catch(err => {
 				console.log("Request Failed", err);
-			}); // Catch errors
+			});
 	};
 	//API eliminar lista.
 	const deleteList = () => {
@@ -81,16 +81,15 @@ export let ToDoContainer = () => {
 			body: JSON.stringify([""]),
 			headers: { "Content-type": "application/json" }
 		})
-			.then(response => response.json()) // convert to json
+			.then(response => response.json())
 			.then(data => {
-				//dentro del elemento que se devuelve generamos fetch:post
+				
 				fetch(
 					"https://assets.breatheco.de/apis/fake/todos/user/agarzon",
 					{
 						method: "POST",
 						body: JSON.stringify([""]),
-						headers: { "Content-type": "application/json" }
-						// convert to json
+						headers: { "Content-type": "application/json" }	
 					}
 				)
 					.then(response => response.json())
@@ -111,7 +110,7 @@ export let ToDoContainer = () => {
 			})
 			.catch(err => {
 				console.log("Request Failed", err);
-			}); // Catch errors
+			}); 
 	};
 
 	//formulario
