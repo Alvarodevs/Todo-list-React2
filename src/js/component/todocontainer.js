@@ -16,7 +16,7 @@ export let ToDoContainer = () => {
 			.then(data => {
 				setArrayTasks(data);
 			})
-			.catch(err => console.log("Request Failed", err));//aquí también podria venir la generación de la lista.
+			.catch(err => console.log("Request Failed", err)); //aquí también podria venir la generación de la lista.
 	}, []);
 	console.log(arrayTasks);
 	//Funcion creacion de array con "task"
@@ -83,13 +83,12 @@ export let ToDoContainer = () => {
 		})
 			.then(response => response.json())
 			.then(data => {
-				
 				fetch(
 					"https://assets.breatheco.de/apis/fake/todos/user/agarzon",
 					{
 						method: "POST",
 						body: JSON.stringify([""]),
-						headers: { "Content-type": "application/json" }	
+						headers: { "Content-type": "application/json" }
 					}
 				)
 					.then(response => response.json())
@@ -110,7 +109,7 @@ export let ToDoContainer = () => {
 			})
 			.catch(err => {
 				console.log("Request Failed", err);
-			}); 
+			});
 	};
 
 	//formulario
